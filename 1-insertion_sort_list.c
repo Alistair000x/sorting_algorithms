@@ -1,34 +1,45 @@
 #include "sort.h"
 /**
- * insertion_sort_list - Sorts a doubly linked list in ascending order
- *                       using the Insertion Sort algorithm.
- * @list: A pointer to a pointer to the head of the list.
+ * insertion_sort_list - Sorts a doubly linked list of integers
+ * in ascending order using the Insertion sort algorithm
+ * @list: Double linked list to sort
  */
 void insertion_sort_list(listint_t **list)
 {
-listint_t *current, *previous, *next_node;
-if (list == NULL || *list == NULL || (*list)->next == NULL)
+listint_t *node;
+if (list == NULL || (*list)->next == NULL)
 return;
-current = (*list)->next;
-while (current != NULL)
+node = (*list)->next;
+while (node)
 {
-previous = current->prev;
-next_node = current->next;
-while (previous != NULL && previous->n > current->n)
+while ((node->prev) && (node->prev->n > node->n))
 {
-previous->next = current->next;
-if (current->next != NULL)
-current->next->prev = previous;
-current->next = previous;
-current->prev = previous->prev;
-previous->prev = current;
-if (current->prev == NULL)
-*list = current; 
-if (previous->next != NULL)
-previous->next->prev = previous;
-previous->next = next_node;
+node = swap_node(node, list);
 print_list(*list);
 }
-current = next_node;
+node = node->next;
 }
 }
+/**
+ * swap_node - Swaps a node with its previous one
+ * @node: The node to swap
+ * @list: The node list
+ *
+ * Return: A pointer to the node that was entered
+ */
+listint_t *swap_node(listint_t *node, listint_t **list)
+{
+listint_t *back = node->prev, *current = node;
+back->next = current->next;
+if (current->next)
+current->next->prev = back;
+current->next = back;
+current->prev = back->prev;
+back->prev = current;
+if (current->prev)
+current->prev->next = current;
+else
+*list = current;
+return (current);
+}
+
